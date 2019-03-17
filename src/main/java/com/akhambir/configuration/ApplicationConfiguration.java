@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -23,7 +24,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.sql.DataSource;
-import javax.transaction.TransactionManager;
 import java.util.Properties;
 
 @Configuration
@@ -40,6 +40,13 @@ public class ApplicationConfiguration extends WebMvcConfigurerAdapter implements
         resolver.setSuffix(".jsp");
         return resolver;
     }
+
+    /*@Bean
+    public ResourceBundleMessageSource messageSource() {
+        ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
+        ms.setBasename("messages");
+        return ms;
+    }*/
 
     @Bean
     public DataSource dataSource(Environment env) {
