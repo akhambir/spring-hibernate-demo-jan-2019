@@ -1,11 +1,11 @@
 package com.akhambir.configuration;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -20,10 +20,16 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
+import javax.servlet.SessionTrackingMode;
 import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Properties;
 
 @Configuration
@@ -89,6 +95,8 @@ public class ApplicationConfiguration extends WebMvcConfigurerAdapter implements
 
         ServletRegistration.Dynamic dispatcher = container
                 .addServlet("dispatcher", new DispatcherServlet(context));
+
+        container.setSessionTrackingModes(EnumSet.of(SessionTrackingMode.COOKIE));
 
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");

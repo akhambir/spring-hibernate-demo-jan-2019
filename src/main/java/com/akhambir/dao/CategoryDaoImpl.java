@@ -17,10 +17,22 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public List<Category> getAll() {
-        List<Category> result = sessionFactory.getCurrentSession()
+        return sessionFactory.getCurrentSession()
                 .createQuery("from Category c", Category.class)
                 .list();
-        System.out.println();
-        return result;
+    }
+
+    @Override
+    public Category getById(Long id) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("from Category c inner join fetch c.products where c.id =:id", Category.class)
+                .setParameter("id", id)
+                .uniqueResult();
+    }
+
+    @Override
+    public Category save(Category category) {
+        sessionFactory.getCurrentSession().update(category);
+        return category;
     }
 }

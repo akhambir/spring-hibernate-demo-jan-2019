@@ -1,5 +1,8 @@
 package com.akhambir.model;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,6 +25,7 @@ public class Category {
     private String categoryName;
     @Column(name = "CATEGORY_DESCRIPTION")
     private String description;
+    @Cascade(CascadeType.SAVE_UPDATE)
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
 
