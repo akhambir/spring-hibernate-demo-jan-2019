@@ -27,12 +27,12 @@ public class UserController {
         return vm;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(@ModelAttribute User user) {
         User u = userService.getByUsername(user.getUsername());
         // some logic
         return "login";
-    }
+    }*/
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView register(ModelAndView vm) {
