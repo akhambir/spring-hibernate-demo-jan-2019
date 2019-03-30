@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -80,6 +82,17 @@ public class ApplicationConfiguration extends WebMvcConfigurerAdapter implements
         return tm;
     }
 
+    @Bean
+    public JavaMailSender mailSender(Environment env) {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(env.getProperty("smtp.host"));
+        mailSender.setPort(Integer.parseInt(env.getProperty("smtp.port")));
+        mailSender.setUsername(env.getProperty("email.address"));
+        mailSender.setPassword(env.getProperty("email.password"));
+        mailSender.setJavaMailProperties(getMailProps(env));
+        return mailSender;
+    }
+
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/resources/**")
@@ -100,6 +113,15 @@ public class ApplicationConfiguration extends WebMvcConfigurerAdapter implements
 
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
+    }
+
+    private Properties getMailProps(Environment env) {
+        Properties props = new Properties();
+        props.put("mail.transport.protocol", env.getProperty("mail.transport.protocol"));
+        props.put("mail.smtp.auth", env.getProperty("mail.smtp.auth"));
+        props.put("mail.smtp.starttls.enable", env.getProperty("mail.smtp.starttls.enable"));
+        props.put("mail.debug", env.getProperty("mail.debug"));
+        return props;
     }
 
     private Properties getHibernateProps(Environment env) {

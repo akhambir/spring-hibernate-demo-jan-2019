@@ -15,6 +15,7 @@ public class UserRegistration {
     @Size(min = 6, message = "Password must be greater or equal to 8")
     private String password;
     private String repeatPassword;
+    private String email;
     private String firstName;
     private String lastName;
 
@@ -43,6 +44,14 @@ public class UserRegistration {
         this.repeatPassword = repeatPassword;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -65,6 +74,7 @@ public class UserRegistration {
         result.setPassword(ur.getPassword());
         result.setFirstName(ur.getFirstName());
         result.setLastName(ur.getLastName());
+        result.setEmail(ur.getEmail());
         return result;
     }
 }

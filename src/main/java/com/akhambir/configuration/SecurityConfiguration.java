@@ -44,7 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?error")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/register", "/resources/**")
+                .antMatchers("/login", "/register", "/email-verification/**", "/resources/**")
                 .permitAll()
                 .antMatchers("/admin/**")
                 .hasRole("ADMIN")
@@ -55,4 +55,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
+
+    
 }

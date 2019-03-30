@@ -28,4 +28,16 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    @Override
+    public User getByToken(String token) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("from User u where u.token =:token", User.class)
+                .setParameter("token", token)
+                .uniqueResult();
+    }
+
+    public User updateUser(User user) {
+        sessionFactory.getCurrentSession().update(user);
+        return user;
+    }
 }

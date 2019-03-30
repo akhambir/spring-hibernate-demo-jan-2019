@@ -2,6 +2,8 @@ package com.akhambir.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,12 +24,17 @@ public class User {
     private String username;
     @Column(name = "PASSWORD")
     private String password;
+    @Column(name = "EMAIL")
+    private String email;
     @Column(name = "TOKEN")
     private String token;
     @Column(name = "FIRST_NAME")
     private String firstName;
     @Column(name = "LAST_NAME")
     private String lastName;
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
     @ManyToMany()
     @JoinTable(name = "USERS_TO_ROLES",
             joinColumns = @JoinColumn(name = "FK_USER_ID"),
@@ -35,17 +42,6 @@ public class User {
     )
     private List<Role> roles = new ArrayList<>();
 
-    public User() {
-    }
-
-    public User(Long id, String username, String password, String token, String firstName, String lastName) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.token = token;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 
     public Long getId() {
         return id;
@@ -69,6 +65,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getToken() {
@@ -95,11 +99,25 @@ public class User {
         this.lastName = lastName;
     }
 
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+
     public List<Role> getRoles() {
         return roles;
     }
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public enum UserStatus {
+        PENDING_VERIFICATION,
+        ACTIVE,
+        BLOCKED
     }
 }

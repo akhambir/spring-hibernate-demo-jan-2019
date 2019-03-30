@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,6 +50,13 @@ public class UserController {
         User user = UserRegistration.of(ur);
         vm.addObject("user", userService.register(user));
         vm.setViewName("welcome");
+        return vm;
+    }
+
+    @RequestMapping(value = "/email-verification/{token}", method = RequestMethod.GET)
+    public ModelAndView emailVerification(@PathVariable String token, ModelAndView vm) {
+        vm.setViewName("success-verification");
+        vm.addObject("user", userService.emailVerification(token));
         return vm;
     }
 }

@@ -7,16 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,34 +23,33 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
+    @Autowired
+    private MailService mailService;
+
     public User getByUsername(String username) {
         return userDao.getByUsername(username);
     }
 
     @Override
     public User register(User user) {
-        String hashedPassword = sha256(user.getPassword());
+        String hashedPassword = encoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         user.setToken(getToken());
-        return userDao.addUser(user);
+        user.setStatus(User.UserStatus.PENDING_VERIFICATION);
+        User saved = userDao.addUser(user);
+        mailService.send(saved);
+        return saved;
     }
 
-    private static String sha256(String base) {
-        try{
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(base.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-                if(hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-        } catch(Exception ex){
-            throw new RuntimeException(ex);
-        }
+    @Override
+    public User emailVerification(String token) {
+        User user = userDao.getByToken(token);
+        user.setStatus(User.UserStatus.ACTIVE);
+        userDao.updateUser(user);
+        return user;
     }
 
     private String getToken() {
